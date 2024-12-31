@@ -1,0 +1,20 @@
+---
+- name: Clone VM with only source VM name "Template".
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /bin/python3  
+  tasks:
+    - name: Create a VM from template on Proxmox
+      community.general.proxmox_kvm:
+        api_host: "192.168.1.100" # Replace with your Proxmox server IP
+        api_user: "root@pam" # Replace with your Proxmox user
+        api_password: "y7sd5rq2" # Replace with your Proxmox password
+        node: "pve" # Replace with the Proxmox node name
+        vmid: 103 # Unique ID for the new VM
+        name: "worker-4" # Name of the new VM
+        clone: "template" # Name of the existing template in Proxmox
+        pool: "optional_vm_pool" # Optional: specify a pool for the VM
+        storage: "local-lvm" # Storage to use for the VM disk
+        force: yes # Set to yes if you want to force cloning
+      
+
