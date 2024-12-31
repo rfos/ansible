@@ -1,5 +1,8 @@
 ---
 - hosts: all
-  gather_facts: false
   tasks:
-    - ping:
+    - name: Ping All Hosts
+      ansible.builtin.ping:
+      register: result
+    - debug:
+        var: result
