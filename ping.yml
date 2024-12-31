@@ -1,8 +1,8 @@
 ---
-- hosts: all
+- name: Ping Maria DB Hosts
+  hosts: all
+  become: yes
   tasks:
-    - name: Ping All Hosts
-      ansible.builtin.ping:
-      register: result
-    - debug:
-        var: result
+    - name: Ping Maria DB Hosts
+      ping:
+...
