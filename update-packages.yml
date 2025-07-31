@@ -15,5 +15,21 @@
       debug:
         var: update_results
 
+   # --- Sezione Installazione Chocolatey ---
+    - name: Verifica se Chocolatey è già installato
+      ansible.windows.win_stat:
+        path: C:\ProgramData\chocolatey\bin\choco.exe
+      register: chocolatey_check
+
+    - name: Installa Chocolatey (se non presente)
+      ansible.windows.win_powershell:
+        script: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force; 
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+      when: not chocolatey_check.stat.exists
+      args:
+        creates: C:\ProgramData\chocolatey\bin\choco.exe        
+
     # - name: Riavvio forzato del server
     #   ansible.windows.win_reboot:
