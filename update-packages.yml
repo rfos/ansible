@@ -15,5 +15,5 @@
       debug:
         var: update_results
 
-    - name: Riavvio forzato del server
-      ansible.windows.win_reboot:
+    # - name: Riavvio forzato del server
+    #   ansible.windows.win_reboot:
