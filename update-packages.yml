@@ -1,8 +1,16 @@
 ---
-- hosts: all
-  become: true
+- name: Applica gli aggiornamenti di Windows
+  hosts: windows  # Assicurati che il tuo inventario in AWX abbia un gruppo 'windows'
+  gather_facts: false
   tasks:
-    - name: update apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
+    - name: Cerca, scarica e installa gli aggiornamenti di sicurezza e critici
+      ansible.windows.win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+        reboot: true
+      register: update_results
+
+    - name: Stampa i risultati dell'aggiornamento
+      debug:
+        var: update_results
