@@ -1,6 +1,6 @@
 ---
 - name: Applica gli aggiornamenti di Windows
-  hosts: windows  # Assicurati che il tuo inventario in AWX abbia un gruppo 'windows'
+  hosts: Windows  # Assicurati che il tuo inventario in AWX abbia un gruppo 'windows'
   gather_facts: false
   tasks:
     - name: Cerca, scarica e installa gli aggiornamenti di sicurezza e critici
