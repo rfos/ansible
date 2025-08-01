@@ -20,14 +20,14 @@
     citrix_app_name: "Citrix Workspace"
 
   tasks:
-    - name: Terminate running Citrix processes
-      ansible.windows.win_shell: |
-        Get-Process -Name "Receiver", "SelfService", "SelfServicePlugin", "concentr" -ErrorAction SilentlyContinue | Stop-Process -Force
-      ignore_errors: yes
-      changed_when: false
-      check_mode: no
-      tags:
-        - pre-install
+    # - name: Terminate running Citrix processes
+    #   ansible.windows.win_shell: |
+    #     Get-Process -Name "Receiver", "SelfService", "SelfServicePlugin", "concentr" -ErrorAction SilentlyContinue | Stop-Process -Force
+    #   ignore_errors: yes
+    #   changed_when: false
+    #   check_mode: no
+    #   tags:
+    #     - pre-install
 
     - name: Update Citrix Workspace
       ansible.windows.win_package:
