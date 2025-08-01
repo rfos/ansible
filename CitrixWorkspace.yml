@@ -2,7 +2,7 @@
 - name: Applica gli aggiornamenti di Windows
   hosts: Windows  # Assicurati che il tuo inventario in AWX abbia un gruppo 'windows'
   gather_facts: false
- vars:
+  vars:
     # Define the path to the Citrix Workspace installer executable.
     # This can be a local path on the Ansible controller or a network share
     # accessible by the target Windows hosts.
