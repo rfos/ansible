@@ -1,0 +1,61 @@
+---
+- name: Applica gli aggiornamenti di Windows
+  hosts: Windows  # Assicurati che il tuo inventario in AWX abbia un gruppo 'windows'
+  gather_facts: false
+ vars:
+    # Define the path to the Citrix Workspace installer executable.
+    # This can be a local path on the Ansible controller or a network share
+    # accessible by the target Windows hosts.
+    citrix_installer_path: "\\\\aquafil.com\\ictservices\\InstPC-Replicated\\Citrix\\CitrixWorkspaceApp.exe"
+
+    # Define the command-line arguments for a silent installation.
+    # /silent: Suppresses all installation dialogs.
+    # /noreboot: Prevents the installer from forcing a reboot.
+    # /includeSSON: Includes the Single Sign-On component.
+    # You can add other arguments as needed. Refer to Citrix documentation for more options.
+    citrix_install_args: "/silent /noreboot /includeSSON"
+
+    # Define the name of the Citrix Workspace application as it appears in Add/Remove Programs.
+    # This is used to check if the application is installed.
+    citrix_app_name: "Citrix Workspace"
+
+  tasks:
+    - name: Terminate running Citrix processes
+      ansible.windows.win_shell: |
+        Get-Process -Name "Receiver", "SelfService", "SelfServicePlugin", "concentr" -ErrorAction SilentlyContinue | Stop-Process -Force
+      ignore_errors: yes
+      changed_when: false
+      check_mode: no
+      tags:
+        - pre-install
+
+    - name: Update Citrix Workspace
+      ansible.windows.win_package:
+        path: "{{ citrix_installer_path }}"
+        product_id: "{{ citrix_app_name }}"
+        arguments: "{{ citrix_install_args }}"
+        state: present
+      register: win_package_result
+      tags:
+        - install
+
+    - name: Display installation result
+      ansible.builtin.debug:
+        var: win_package_result
+      tags:
+        - install
+
+    - name: Verify Citrix Workspace Version (Optional)
+      ansible.windows.win_shell: |
+        (Get-Item (Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*').PSPath | Where-Object { $_.GetValue('DisplayName') -eq '{{ citrix_app_name }}' }).GetValue('DisplayVersion')
+      register: citrix_version
+      changed_when: false
+      check_mode: no
+      tags:
+        - post-install
+
+    - name: Display Citrix Workspace Version
+      ansible.builtin.debug:
+        msg: "Citrix Workspace version: {{ citrix_version.stdout | trim }}"
+      tags:
+        - post-install
